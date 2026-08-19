@@ -1,50 +1,61 @@
-function doPost(e) {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var rowData = [];
-    
-    // Captura los datos que vienen desde la web de GitHub
-    rowData.push(e.parameter.Nombre);
-    rowData.push(e.parameter.Apellido);
-    rowData.push(e.parameter.DNI_Titular);
-    rowData.push(e.parameter.Email_Contacto);
-    rowData.push(e.parameter.CUE_Colegio);
-    rowData.push(e.parameter.Numero_Serie_SN);
-    rowData.push(e.parameter.Hardware_ID);
-    rowData.push(e.parameter.Boot_Tick);
-    rowData.push(new Date()); // Agrega fecha y hora automáticas
-    
-    // Guarda los datos en el Excel
-    sheet.appendRow(rowData);
-    
-    // CONFIGURACIÓN DE ENVÍO DE CORREOS
-    var correoDestino = "MASS@educar.gob.ar";
-    var correoCopia = "serviciotecnico@elechaco.edu.ar";
-    
-    var asunto = "SOLICITUD DE DESBLOQUEO: " + e.parameter.Apellido + ", " + e.parameter.Nombre;
-    
-    var cuerpoMensaje = "Se ha generado una nueva solicitud de código de desbloqueo.\n\n" +
-                        "DATOS DEL SOLICITANTE:\n" +
-                        "- Nombre completo: " + e.parameter.Nombre + " " + e.parameter.Apellido + "\n" +
-                        "- DNI Titular: " + e.parameter.DNI_Titular + "\n" +
-                        "- Email de Contacto: " + e.parameter.Email_Contacto + "\n\n" +
-                        "DATOS DE LA NETBOOK:\n" +
-                        "- CUE Colegio: " + e.parameter.CUE_Colegio + "\n" +
-                        "- S/N (N° Serie): " + e.parameter.Numero_Serie_SN + "\n" +
-                        "- Hardware ID: " + e.parameter.Hardware_ID + "\n" +
-                        "- Boot Tick: " + e.parameter.Boot_Tick + "\n";
-    
-    // Envía el correo automático a Nación y te copia a vos en la escuela
-    MailApp.sendEmail(correoDestino, asunto, cuerpoMensaje);
-    MailApp.sendEmail(correoCopia, asunto, cuerpoMensaje);
-    
-    // Le avisa a GitHub que todo salió perfecto
-    return ContentService.createTextOutput(JSON.stringify({"result":"success"}))
-                         .setMimeType(ContentService.MimeType.JSON);
-    
-  } catch(error) {
-    return ContentService.createTextOutput(JSON.stringify({"result":"error", "error": error.toString()}))
-                         .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Desbloqueo de Netbooks</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f4f9; }
+        form { max-width: 450px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        .grupo { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background: #0056b3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #004085; }
+    </style>
+</head>
+<body>
 
+    <h2>Solicitud de Código de Desbloqueo</h2>
+    
+    <!-- PEGA TU ENLACE /exec EN EL ACTION DE ABAJO -->
+    <form action="https://google.com" method="POST">
+        
+        <div class="grupo">
+            <label>Nombre:</label>
+            <input type="text" name="Nombre" required>
+        </div>
+        <div class="grupo">
+            <label>Apellido:</label>
+            <input type="text" name="Apellido" required>
+        </div>
+        <div class="grupo">
+            <label>DNI Titular:</label>
+            <input type="text" name="DNI_Titular" required>
+        </div>
+        <div class="grupo">
+            <label>Email de Contacto:</label>
+            <input type="email" name="Email_Contacto" required>
+        </div>
+        <div class="grupo">
+            <label>CUE Colegio:</label>
+            <input type="text" name="CUE_Colegio" required>
+        </div>
+        <div class="grupo">
+            <label>Número de Serie (S/N):</label>
+            <input type="text" name="Numero_Serie_SN" required>
+        </div>
+        <div class="grupo">
+            <label>Hardware ID:</label>
+            <input type="text" name="Hardware_ID" required>
+        </div>
+        <div class="grupo">
+            <label>Boot Tick:</label>
+            <input type="text" name="Boot_Tick" required>
+        </div>
+
+        <button type="submit">Enviar Solicitud</button>
+    </form>
+
+</body>
+</html>
