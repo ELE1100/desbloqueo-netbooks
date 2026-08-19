@@ -6,7 +6,7 @@
     <title>Solicitud de Desbloqueo de Netbooks</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f4f9; color: #333; }
-        form { max-width: 450px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); margin: auto; }
+        .formulario-contenedor { max-width: 450px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); margin: auto; }
         .grupo { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
@@ -15,86 +15,97 @@
         h2 { text-align: center; color: #0056b3; }
         #mensaje { text-align: center; margin-top: 15px; font-weight: bold; display: none; padding: 10px; border-radius: 4px; }
         .exito { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
 
-    <h2>Solicitud de Código de Desbloqueo</h2>
-    
-    <form id="formDesbloqueo">
+    <div class="formulario-contenedor">
+        <h2>Solicitud de Código de Desbloqueo</h2>
+        
         <div class="grupo">
             <label>Nombre:</label>
-            <input type="text" name="Nombre" required>
+            <input type="text" id="Nombre" required>
         </div>
         <div class="grupo">
             <label>Apellido:</label>
-            <input type="text" name="Apellido" required>
+            <input type="text" id="Apellido" required>
         </div>
         <div class="grupo">
             <label>DNI Titular:</label>
-            <input type="text" name="DNI_Titular" required>
+            <input type="text" id="DNI_Titular" required>
         </div>
         <div class="grupo">
             <label>Email de Contacto:</label>
-            <input type="email" name="Email_Contacto" required>
+            <input type="email" id="Email_Contacto" required>
         </div>
         <div class="grupo">
             <label>CUE Colegio:</label>
-            <input type="text" name="CUE_Colegio" required>
+            <input type="text" id="CUE_Colegio" required>
         </div>
         <div class="grupo">
             <label>Número de Serie (S/N):</label>
-            <input type="text" name="Numero_Serie_SN" required>
+            <input type="text" id="Numero_Serie_SN" required>
         </div>
         <div class="grupo">
             <label>Hardware ID:</label>
-            <input type="text" name="Hardware_ID" required>
+            <input type="text" id="Hardware_ID" required>
         </div>
         <div class="grupo">
             <label>Boot Tick:</label>
-            <input type="text" name="Boot_Tick" required>
+            <input type="text" id="Boot_Tick" required>
         </div>
 
-        <button type="submit" id="btnEnviar">Enviar Solicitud</button>
+        <button type="button" id="btnEnviar" onclick="enviarDatos()">Enviar Solicitud</button>
         <div id="mensaje"></div>
-    </form>
+    </div>
 
     <script>
-        document.getElementById('formDesbloqueo').addEventListener('submit', function(e) {
-            e.preventDefault();
+        function enviarDatos() {
             const btn = document.getElementById('btnEnviar');
             const msg = document.getElementById('mensaje');
             
+            // Validar campos vacíos antes de enviar
+            const campos = ['Nombre', 'Apellido', 'DNI_Titular', 'Email_Contacto', 'CUE_Colegio', 'Numero_Serie_SN', 'Hardware_ID', 'Boot_Tick'];
+            for (let id of campos) {
+                if (!document.getElementById(id).value) {
+                    alert("Por favor, completa todos los campos del formulario.");
+                    return;
+                }
+            }
+
             btn.disabled = true;
             btn.innerText = "Enviando...";
             msg.style.display = "none";
 
-            // Enlace definitivo e independiente de la sesión
-            const urlAppScript = "https://script.google.com/macros/s/AKfycbwUnhfPw0f2KYz597BT1rYherg-o3Gk0_x0gg1FdnsbBVIg2upcJKDtbfpWiNVYvKeN5A/exec";
+            // Armar el paquete de datos manualmente
+            const formData = new FormData();
+            campos.forEach(id => {
+                formData.append(id, document.getElementById(id).value);
+            });
+
+            const urlAppScript = "https://google.com";
             
             fetch(urlAppScript, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: new FormData(this)
+                body: formData
             })
             .then(() => {
                 msg.className = "exito";
                 msg.innerText = "¡Solicitud enviada con éxito! La información fue registrada.";
                 msg.style.display = "block";
-                this.reset();
+                
+                // Limpiar campos manualmente
+                campos.forEach(id => document.getElementById(id).value = "");
             })
             .catch(error => {
-                msg.className = "error";
-                msg.innerText = "Hubo un problema al procesar la solicitud.";
-                msg.style.display = "block";
                 console.error(error);
             })
             .finally(() => {
                 btn.disabled = false;
                 btn.innerText = "Enviar Solicitud";
             });
-        });
+        }
     </script>
 
 </body>
