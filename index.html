@@ -62,8 +62,7 @@
 
     <script>
         document.getElementById('formDesbloqueo').addEventListener('submit', function(e) {
-            e.preventDefault(); // Evita que la página intente recargarse en GitHub
-            
+            e.preventDefault();
             const btn = document.getElementById('btnEnviar');
             const msg = document.getElementById('mensaje');
             
@@ -71,23 +70,23 @@
             btn.innerText = "Enviando...";
             msg.style.display = "none";
 
-            const urlAppScript = "https://google.com";
+            // Enlace definitivo e independiente de la sesión
+            const urlAppScript = "https://script.google.com/macros/s/AKfycbwUnhfPw0f2KYz597BT1rYherg-o3Gk0_x0gg1FdnsbBVIg2upcJKDtbfpWiNVYvKeN5A/exec";
             
-            // Envío de datos controlado por JS
             fetch(urlAppScript, {
                 method: 'POST',
-                mode: 'no-cors', // Evita bloqueos de seguridad del navegador cross-origin
+                mode: 'no-cors',
                 body: new FormData(this)
             })
             .then(() => {
                 msg.className = "exito";
-                msg.innerText = "¡Solicitud enviada con éxito! Revisá tu correo.";
+                msg.innerText = "¡Solicitud enviada con éxito! La información fue registrada.";
                 msg.style.display = "block";
-                this.reset(); // Limpia los campos del formulario
+                this.reset();
             })
             .catch(error => {
                 msg.className = "error";
-                msg.innerText = "Hubo un error al enviar. Intentá nuevamente.";
+                msg.innerText = "Hubo un problema al procesar la solicitud.";
                 msg.style.display = "block";
                 console.error(error);
             })
@@ -100,4 +99,3 @@
 
 </body>
 </html>
-
