@@ -26,58 +26,57 @@
 
 <div class="form-container">
     <h2>Formulario de Desbloqueo</h2>
-    <div class="subtitle">Completá los datos para solicitar tu código</div>
+    <div class="subtitle">Completá los datos para generar el correo de solicitud</div>
     
-    <!-- PEGA TU ENLACE DE FORMSPREE EN EL ACTION -->
-    <form action="REEMPLAZAR_CON_TU_URL_DE_FORMSPREE" method="POST">
+    <form id="desbloqueoForm">
         
         <div class="section-title">Datos del Solicitante</div>
         
         <div class="form-group">
             <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="Nombre" placeholder="Tu primer y segundo nombre" required>
+            <input type="text" id="nombre" required placeholder="Tu primer y segundo nombre">
         </div>
 
         <div class="form-group">
             <label for="apellido">Apellido</label>
-            <input type="text" id="apellido" name="Apellido" placeholder="Tu apellido completo" required>
+            <input type="text" id="apellido" required placeholder="Tu apellido completo">
         </div>
 
         <div class="form-group">
             <label for="dni">DNI del titular</label>
-            <input type="text" id="dni" name="DNI_Titular" placeholder="Sin puntos ni espacios" required>
+            <input type="text" id="dni" required placeholder="Sin puntos ni espacios">
         </div>
 
         <div class="form-group">
             <label for="email">Correo electrónico de contacto</label>
-            <input type="email" id="email" name="_replyto" placeholder="ejemplo@correo.com" required>
+            <input type="email" id="email" required placeholder="ejemplo@correo.com">
         </div>
 
         <div class="section-title">Datos del Establecimiento</div>
 
         <div class="form-group">
-            <label for="cue">CUE del Colegio (Código Único de Establecimiento)</label>
-            <input type="text" id="cue" name="CUE_Colegio" placeholder="Ej: 220012300" required>
+            <label for="cue">CUE del Colegio</label>
+            <input type="text" id="cue" required placeholder="Ej: 220012300">
         </div>
 
         <div class="section-title">Datos Técnicos del Equipo</div>
 
         <div class="form-group">
             <label for="sn">Número de Serie (S/N)</label>
-            <input type="text" id="sn" name="Numero_Serie_SN" placeholder="Ej: 1A2B3C4D5E" required>
+            <input type="text" id="sn" required placeholder="Ej: 1A2B3C4D5E">
         </div>
 
         <div class="form-group">
             <label for="hwid">Hardware ID</label>
-            <input type="text" id="hwid" name="Hardware_ID" placeholder="Ej: 00-11-22-33-44-55" required>
+            <input type="text" id="hwid" required placeholder="Ej: 00-11-22-33-44-55">
         </div>
 
         <div class="form-group">
             <label for="boottick">Boot Tick</label>
-            <input type="text" id="boottick" name="Boot_Tick" placeholder="Ej: 00 00" required>
+            <input type="text" id="boottick" required placeholder="Ej: 00 00">
         </div>
 
-        <button type="submit">Enviar Solicitud</button>
+        <button type="submit">Generar y Enviar Correo</button>
     </form>
 
     <div class="support-info">
@@ -86,6 +85,45 @@
     </div>
 </div>
 
+<script>
+    document.getElementById('desbloqueoForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Evita errores de recarga o "405 Not Allowed"
+
+        // Captura los valores ingresados por el usuario
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const dni = document.getElementById('dni').value;
+        const email = document.getElementById('email').value;
+        const cue = document.getElementById('cue').value;
+        const sn = document.getElementById('sn').value;
+        const hwid = document.getElementById('hwid').value;
+        const boottick = document.getElementById('boottick').value;
+
+        // Configura los destinatarios separados por coma
+        const destinatarios = "MASS@educar.gob.ar,serviciotecnico@elechaco.edu.ar";
+        
+        // Define el asunto del correo electrónico
+        const asunto = encodeURIComponent("SOLICITUD DE DESBLOQUEO: " + apellido + ", " + nombre);
+        
+        // Estructura el cuerpo del mensaje en texto limpio
+        let cuerpo = "SOLICITUD DE CÓDIGO DE DESBLOQUEO\n\n";
+        cuerpo += "DATOS DEL SOLICITANTE:\n";
+        cuerpo += "- Nombre completo: " + nombre + " " + apellido + "\n";
+        cuerpo += "- DNI Titular: " + dni + "\n";
+        cuerpo += "- Email de Contacto: " + email + "\n\n";
+        cuerpo += "DATOS DEL ESTABLECIMIENTO:\n";
+        cuerpo += "- CUE Colegio: " + cue + "\n\n";
+        cuerpo += "DATOS TÉCNICOS DE LA NETBOOK:\n";
+        cuerpo += "- S/N (N° Serie): " + sn + "\n";
+        cuerpo += "- Hardware ID: " + hwid + "\n";
+        cuerpo += "- Boot Tick: " + boottick + "\n";
+        
+        const cuerpoFormateado = encodeURIComponent(cuerpo);
+
+        // Abre el gestor de correo nativo (Gmail, Outlook, etc) sin intermediarios
+        window.location.href = "mailto:" + destinatarios + "?subject=" + asunto + "&body=" + cuerpoFormateado;
+    });
+</script>
+
 </body>
 </html>
-
