@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Desbloqueo de Equipos</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; display: flex; justify-content: center; }
+        .form-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 480px; }
+        h2 { text-align: center; color: #333; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 25px; }
+        .section-title { font-size: 14px; color: #007bff; text-transform: uppercase; font-weight: bold; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 14px; }
+        input[type="text"], input[type="email"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        input:focus { border-color: #007bff; outline: none; box-shadow: 0 0 5px rgba(0,123,255,0.2); }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        .support-info { margin-top: 25px; padding-top: 15px; border-top: 2px dashed #ddd; text-align: center; font-size: 13px; color: #666; line-height: 1.5; }
+        .support-info a { color: #007bff; text-decoration: none; font-weight: bold; }
+        .support-info a:hover { text-decoration: underline; }
+
+        .mensaje-exito { display: none; background-color: #d4edda; color: #155724; padding: 15px; border-radius: 4px; text-align: center; margin-bottom: 15px; font-weight: bold; border: 1px solid #c3e6cb; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Formulario de Desbloqueo</h2>
+    <div class="subtitle">Completá los datos para solicitar tu código</div>
+    
+    <div id="statusSuccess" class="mensaje-exito">¡Solicitud enviada con éxito! Recibirás novedades pronto.</div>
+
+    <form id="desbloqueoForm">
+        
+        <div class="section-title">Datos del Solicitante</div>
+        
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="Nombre" placeholder="Tu primer y segundo nombre" required>
+        </div>
+
+        <div class="form-group">
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" name="Apellido" placeholder="Tu apellido completo" required>
+        </div>
+
+        <div class="form-group">
+            <label for="dni">DNI del titular</label>
+            <input type="text" id="dni" name="DNI_Titular" placeholder="Sin puntos ni espacios" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Correo electrónico de contacto</label>
+            <input type="email" id="email" name="Email_Contacto" placeholder="ejemplo@correo.com" required>
+        </div>
+
+        <div class="section-title">Datos del Establecimiento</div>
+
+        <div class="form-group">
+            <label for="cue">CUE del Colegio (Código Único de Establecimiento)</label>
+            <input type="text" id="cue" name="CUE_Colegio" placeholder="Ej: 220012300" required>
+        </div>
+
+        <div class="section-title">Datos Técnicos del Equipo</div>
+
+        <div class="form-group">
+            <label for="sn">Número de Serie (S/N)</label>
+            <input type="text" id="sn" name="Numero_Serie_SN" placeholder="Ej: 1A2B3C4D5E" required>
+        </div>
+
+        <div class="form-group">
+            <label for="hwid">Hardware ID</label>
+            <input type="text" id="hwid" name="Hardware_ID" placeholder="Ej: 00-11-22-33-44-55" required>
+        </div>
+
+        <div class="form-group">
+            <label for="boottick">Boot Tick</label>
+            <input type="text" id="boottick" name="Boot_Tick" placeholder="Ej: 00 00" required>
+        </div>
+
+        <button type="submit" id="btnEnviar">Enviar Solicitud</button>
+    </form>
+
+    <div class="support-info">
+        ¿Tenés dudas o problemas con el formulario?<br>
+        Contactate con Soporte Técnico: <a href="mailto:serviciotecnico@elechaco.edu.ar">serviciotecnico@elechaco.edu.ar</a>
+    </div>
+</div>
+
+<script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/a/macros/elechaco.edu.ar/s/AKfycbx6-OyDWrRDI-gmMLi-dBr3eh9tNl32NFLTiz2m9VpFmBUAzW7PnQJsXvog6ingGPur/exec";
+
+    document.getElementById('desbloqueoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('btnEnviar');
+        const successBox = document.getElementById('statusSuccess');
+        
+        btn.disabled = true;
+        btn.innerText = "Enviando...";
+
+        const formData = new FormData(this);
+        const searchParams = new URLSearchParams();
+        
+        for (const pair of formData.entries()) {
+            searchParams.append(pair[0], pair[1]);
+        }
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            body: searchParams,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => {
+            btn.innerText = "Enviar Solicitud";
+            btn.disabled = false;
+            successBox.style.display = "block";
+            document.getElementById('desbloqueoForm').reset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch(error => {
+            alert('Hubo un problema al procesar el envío. Reintentá.');
+            btn.disabled = false;
+            btn.innerText = "Enviar Solicitud";
+        });
+    });
+</script>
+
+</body>
+</html>
