@@ -87,9 +87,8 @@
 
 <script>
     document.getElementById('desbloqueoForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Evita errores de recarga o "405 Not Allowed"
+        e.preventDefault(); 
 
-        // Captura los valores ingresados por el usuario
         const nombre = document.getElementById('nombre').value;
         const apellido = document.getElementById('apellido').value;
         const dni = document.getElementById('dni').value;
@@ -99,13 +98,11 @@
         const hwid = document.getElementById('hwid').value;
         const boottick = document.getElementById('boottick').value;
 
-        // Configura los destinatarios separados por coma
+        // Aquí están las dos direcciones reales que querías
         const destinatarios = "MASS@educar.gob.ar,serviciotecnico@elechaco.edu.ar";
         
-        // Define el asunto del correo electrónico
         const asunto = encodeURIComponent("SOLICITUD DE DESBLOQUEO: " + apellido + ", " + nombre);
         
-        // Estructura el cuerpo del mensaje en texto limpio
         let cuerpo = "SOLICITUD DE CÓDIGO DE DESBLOQUEO\n\n";
         cuerpo += "DATOS DEL SOLICITANTE:\n";
         cuerpo += "- Nombre completo: " + nombre + " " + apellido + "\n";
@@ -120,7 +117,7 @@
         
         const cuerpoFormateado = encodeURIComponent(cuerpo);
 
-        // Abre el gestor de correo nativo (Gmail, Outlook, etc) sin intermediarios
+        // Esto abre la app de correo del alumno con todo listo
         window.location.href = "mailto:" + destinatarios + "?subject=" + asunto + "&body=" + cuerpoFormateado;
     });
 </script>
