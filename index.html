@@ -109,28 +109,18 @@
     </div>
 </div>
 
-<!-- SCRIPTS DE INTEGRACIÓN DE FORMSPREE VIA CDN -->
+<!-- UNIFICACIÓN DE CONFIGURACIÓN SIN COMPORTAMIENTO DUPLICADO -->
 <script>
   window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
   formspree('initForm', { 
     formElement: '#desbloqueo-form', 
-    formId: 'mrpzrvqz' 
+    formId: 'mrpzrvqz',
+    data: {
+      _subject: 'Desbloqueo Netbooks'
+    }
   });
 </script>
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 </body>
 </html>
-<!-- SCRIPTS DE INTEGRACIÓN DE FORMSPREE VIA CDN CON ASUNTO LIMPIO -->
-<script>
-  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
-  formspree('initForm', { 
-    formElement: '#desbloqueo-form', 
-    formId: 'mrpzrvqz',
-    // Fuerza a Formspree a sobreescribir el encabezado del correo
-    data: {
-      _subject: 'Desbloqueo Netbooks'
-    }
-  });
-</script>
-<script src="https://unpkg.com" defer></script>
