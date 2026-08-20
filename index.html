@@ -21,6 +21,12 @@
         .support-info { margin-top: 25px; padding-top: 15px; border-top: 2px dashed #ddd; text-align: center; font-size: 13px; color: #666; line-height: 1.5; }
         .support-info a { color: #007bff; text-decoration: none; font-weight: bold; }
         .support-info a:hover { text-decoration: underline; }
+
+        /* ESTILOS PROPIOS PARA ERRORES Y ÉXITO OCULTANDO A FORMSPREE */
+        [data-fs-success], [data-fs-error] { display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; text-align: center; font-weight: bold; }
+        [data-fs-success][data-fs-active] { display: block; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        [data-fs-error][data-fs-active] { display: block; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .error-field { color: #dc3545; font-size: 12px; display: block; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -28,31 +34,42 @@
 <div class="form-container">
     <h2>Formulario de Desbloqueo</h2>
     <div class="subtitle">Completá los datos para solicitar tu código</div>
+
+    <!-- Mensajes de Estado controlados por la librería AJAX -->
+    <div data-fs-success>¡Solicitud enviada con éxito! Revisaremos tus datos a la brevedad.</div>
+    <div data-fs-error>Hubo un error al enviar el formulario. Por favor, reintentá.</div>
     
-    <!-- URL CORRECTA Y DETECTABLE POR TU CUENTA DE FORMSPREE -->
-    <form action="https://formspree.io/f/mrpzrvqz" method="POST">
+    <!-- El ID vincula el formulario con el script inferior -->
+    <form id="desbloqueo-form">
         
+        <!-- CAMBIO CLAVE: Configura el asunto del correo de manera personalizada -->
+        <input type="hidden" name="_subject" value="Nueva Solicitud de Desbloqueo - Netbook">
+
         <!-- SECCIÓN 1: DATOS PERSONALES -->
         <div class="section-title">Datos del Solicitante</div>
         
         <div class="form-group">
             <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="Nombre" placeholder="Tu primer y segundo nombre" required>
+            <input type="text" id="nombre" name="Nombre" placeholder="Tu primer y segundo nombre" data-fs-field required>
+            <span class="error-field" data-fs-error="Nombre"></span>
         </div>
 
         <div class="form-group">
             <label for="apellido">Apellido</label>
-            <input type="text" id="apellido" name="Apellido" placeholder="Tu apellido completo" required>
+            <input type="text" id="apellido" name="Apellido" placeholder="Tu apellido completo" data-fs-field required>
+            <span class="error-field" data-fs-error="Apellido"></span>
         </div>
 
         <div class="form-group">
             <label for="dni">DNI del titular</label>
-            <input type="text" id="dni" name="DNI_Titular" placeholder="Sin puntos ni espacios" required>
+            <input type="text" id="dni" name="DNI_Titular" placeholder="Sin puntos ni espacios" data-fs-field required>
+            <span class="error-field" data-fs-error="DNI_Titular"></span>
         </div>
 
         <div class="form-group">
             <label for="email">Correo electrónico de contacto</label>
-            <input type="email" id="email" name="Email_Contacto" placeholder="ejemplo@correo.com" required>
+            <input type="email" id="email" name="Email_Contacto" placeholder="ejemplo@correo.com" data-fs-field required>
+            <span class="error-field" data-fs-error="Email_Contacto"></span>
         </div>
 
         <!-- SECCIÓN 2: DATOS DEL COLEGIO -->
@@ -60,7 +77,8 @@
 
         <div class="form-group">
             <label for="cue">CUE del Colegio (Código Único de Establecimiento)</label>
-            <input type="text" id="cue" name="CUE_Colegio" placeholder="Ej: 220012300" required>
+            <input type="text" id="cue" name="CUE_Colegio" placeholder="Ej: 220012300" data-fs-field required>
+            <span class="error-field" data-fs-error="CUE_Colegio"></span>
         </div>
 
         <!-- SECCIÓN 3: DATOS DE LA NETBOOK -->
@@ -68,20 +86,23 @@
 
         <div class="form-group">
             <label for="sn">Número de Serie (S/N)</label>
-            <input type="text" id="sn" name="Numero_Serie_SN" placeholder="Ej: 1A2B3C4D5E" required>
+            <input type="text" id="sn" name="Numero_Serie_SN" placeholder="Ej: 1A2B3C4D5E" data-fs-field required>
+            <span class="error-field" data-fs-error="Numero_Serie_SN"></span>
         </div>
 
         <div class="form-group">
             <label for="hwid">Hardware ID</label>
-            <input type="text" id="hwid" name="Hardware_ID" placeholder="Ej: 00-11-22-33-44-55" required>
+            <input type="text" id="hwid" name="Hardware_ID" placeholder="Ej: 00-11-22-33-44-55" data-fs-field required>
+            <span class="error-field" data-fs-error="Hardware_ID"></span>
         </div>
 
         <div class="form-group">
             <label for="boottick">Boot Tick</label>
-            <input type="text" id="boottick" name="Boot_Tick" placeholder="Ej: 00 00" required>
+            <input type="text" id="boottick" name="Boot_Tick" placeholder="Ej: 00 00" data-fs-field required>
+            <span class="error-field" data-fs-error="Boot_Tick"></span>
         </div>
 
-        <button type="submit">Enviar Solicitud</button>
+        <button type="submit" data-fs-submit-btn>Enviar Solicitud</button>
     </form>
 
     <!-- PIE DE PÁGINA CON EL CORREO DE REFERENCIA -->
@@ -90,6 +111,16 @@
         Contactate con Soporte Técnico: <a href="mailto:serviciotecnico@elechaco.edu.ar">serviciotecnico@elechaco.edu.ar</a>
     </div>
 </div>
+
+<!-- SCRIPTS DE INTEGRACIÓN DE FORMSPREE VIA CDN -->
+<script>
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { 
+    formElement: '#desbloqueo-form', 
+    formId: 'mrpzrvqz' 
+  });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 </body>
 </html>
